@@ -143,6 +143,10 @@ def forecast_case(case):
         first = known[0]
     p1 = max(1.0, float(first["viewers"])) if first else 1.0
     hours = [row["hour"] for row in case.get("forecast") or []]
+    # A malformed case must not produce an invalid output: keep only the
+    # forecastable hours 2..24, each once, in order.  Practice and final
+    # cases already list exactly 2..24, so this changes no real output.
+    hours = sorted({int(h) for h in hours if 2 <= int(h) <= 24})
     if not hours:
         hours = list(range(2, 25))
 
